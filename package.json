@@ -1,0 +1,102 @@
+{
+  "name": "fast-json-query",
+  "version": "1.1.0",
+  "description": "A lightweight and efficient JSON querying utility for filtering and searching data",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.esm.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./hooks": {
+      "require": "./dist/hooks/index.js",
+      "import": "./dist/hooks/index.esm.js",
+      "types": "./dist/hooks/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "rollup -c",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prepublishOnly": "npm run build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "keywords": [
+    "json",
+    "query",
+    "filter",
+    "search",
+    "mongodb-like",
+    "lightweight",
+    "fast",
+    "react",
+    "nextjs",
+    "typescript"
+  ],
+  "author": "Md Azadur",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@size-limit/preset-small-lib": "^11.2.0",
+    "@testing-library/react": "^14.2.1",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "rollup": "^4.12.0",
+    "rollup-plugin-filesize": "^10.0.0",
+    "size-limit": "^11.2.0",
+    "ts-jest": "^29.1.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "next": ">=12.0.0",
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    }
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "2 KB"
+    },
+    {
+      "path": "dist/hooks/index.js",
+      "limit": "1 KB"
+    }
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iazadur/fast-json-query.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iazadur/fast-json-query/issues"
+  },
+  "homepage": "https://github.com/iazadur/fast-json-query#readme"
+}

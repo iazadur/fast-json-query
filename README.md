@@ -297,5 +297,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT © [Md Azadur] # fast-json-query
-# fast-json-query
+MIT © [Md Azadur](https://github.com/iazadur)
