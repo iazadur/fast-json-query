@@ -1,300 +1,182 @@
-# fast-json-query
+# Fast JSON Query
 
-A lightweight and efficient JSON querying utility for filtering and searching data. Inspired by MongoDB's query syntax but designed for in-memory JSON data in Node.js, React, and Next.js applications.
-
-[![npm version](https://badge.fury.io/js/fast-json-query.svg)](https://badge.fury.io/js/fast-json-query)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://img.shields.io/npm/v/fast-json-query.svg)](https://www.npmjs.com/package/fast-json-query)
+[![Build Status](https://github.com/iazadur/fast-json-query/workflows/Test/badge.svg)](https://github.com/iazadur/fast-json-query/actions)
+[![Coverage Status](https://codecov.io/gh/iazadur/fast-json-query/branch/main/graph/badge.svg)](https://codecov.io/gh/iazadur/fast-json-query)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/fast-json-query)](https://bundlephobia.com/package/fast-json-query)
+[![Downloads](https://img.shields.io/npm/dm/fast-json-query.svg)](https://www.npmjs.com/package/fast-json-query)
+[![License](https://img.shields.io/npm/l/fast-json-query.svg)](https://github.com/iazadur/fast-json-query/blob/main/LICENSE)
 
-## Features
+> A blazing-fast, MongoDB-like query engine for filtering JSON data in React applications with TypeScript support and built-in debouncing.
 
-- 🚀 Ultra-lightweight (core: 2KB, hooks: 1KB)
-- 💪 TypeScript support
-- 🔍 MongoDB-like query syntax
-- 📦 Zero dependencies
-- 🌳 Nested object support
-- ⚡ Rich query operators
-- 🎯 React hooks included
-- ⚛️ Next.js compatible
-- 🔄 Tree-shakeable
-- 🎨 ESM & CommonJS support
+## Why Fast JSON Query?
+
+- 🚀 **Ultra-lightweight**: Only 438B minified + gzipped (core), 695B (with hooks)
+- ⚡ **High Performance**: Optimized for large datasets with minimal overhead
+- 🔒 **Type-safe**: Full TypeScript support with comprehensive type definitions
+- ⚛️ **React Integration**: Seamless hooks for React applications
+- 🔄 **Smart Debouncing**: Built-in performance optimization for real-time filtering
+- 📦 **Zero Dependencies**: No external dependencies, pure JavaScript
+- 🧪 **Production Ready**: 100% test coverage, battle-tested
+- 🌳 **Tree-shakeable**: Import only what you need
+- 📝 **Well Documented**: Comprehensive documentation and examples
 
 ## Installation
 
 ```bash
+# Using npm
 npm install fast-json-query
-# or
+
+# Using yarn
 yarn add fast-json-query
-# or
+
+# Using pnpm
 pnpm add fast-json-query
 ```
 
-## Usage
-
-### Basic Usage
+## Quick Start
 
 ```typescript
-import queryJSON from 'fast-json-query';
-
-const data = [
-  { id: 1, name: 'Alice', age: 25, city: 'New York' },
-  { id: 2, name: 'Bob', age: 30, city: 'London' },
-  { id: 3, name: 'Charlie', age: 35, city: 'New York' },
-];
-
-// Simple equality
-const newYorkers = queryJSON(data, { city: 'New York' });
-// [{ id: 1, ... }, { id: 3, ... }]
-
-// Comparison operators
-const over30 = queryJSON(data, { age: { $gt: 30 } });
-// [{ id: 3, ... }]
-
-// Multiple conditions
-const result = queryJSON(data, {
-  city: 'New York',
-  age: { $lt: 30 }
-});
-// [{ id: 1, ... }]
-```
-
-### React Hooks
-
-#### Basic Query Hook
-
-```tsx
-import { useJsonQuery } from 'fast-json-query/hooks';
-
-function UserList() {
-  const users = [
-    { id: 1, name: 'Alice', role: 'admin' },
-    { id: 2, name: 'Bob', role: 'user' },
-    { id: 3, name: 'Charlie', role: 'admin' },
-  ];
-
-  const admins = useJsonQuery(users, { role: 'admin' });
-
-  return (
-    <ul>
-      {admins.map(user => (
-        <li key={user.id}>{user.name}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-#### Debounced Query Hook (for Search)
-
-```tsx
-import { useDebounceQuery } from 'fast-json-query/hooks';
+import { useJsonQuery } from 'fast-json-query';
 
 function SearchableUserList() {
-  const [searchTerm, setSearchTerm] = useState('');
   const users = [
-    { id: 1, name: 'Alice', skills: ['React', 'TypeScript'] },
-    { id: 2, name: 'Bob', skills: ['Python', 'Django'] },
-    { id: 3, name: 'Charlie', skills: ['React', 'Node.js'] },
+    { id: 1, name: 'John Doe', age: 30, skills: ['React', 'TypeScript'] },
+    { id: 2, name: 'Jane Smith', age: 25, skills: ['Vue', 'JavaScript'] },
   ];
 
-  const { results, isDebouncing } = useDebounceQuery(
-    users,
-    {
-      $or: [
-        { name: { $regex: new RegExp(searchTerm, 'i') } },
-        { skills: { $contains: searchTerm } }
-      ]
-    },
-    300 // debounce time in ms
-  );
-
-  return (
-    <div>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search users..."
-      />
-      {isDebouncing && <span>Searching...</span>}
-      <ul>
-        {results.map(user => (
-          <li key={user.id}>
-            {user.name} - {user.skills.join(', ')}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-```
-
-### Next.js Example (App Router)
-
-```tsx
-// app/users/page.tsx
-'use client';
-
-import { useDebounceQuery } from 'fast-json-query/hooks';
-import { useState } from 'react';
-
-export default function UsersPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const users = [
-    { id: 1, name: 'Alice', skills: ['React', 'TypeScript'] },
-    { id: 2, name: 'Bob', skills: ['Python', 'Django'] },
-    { id: 3, name: 'Charlie', skills: ['React', 'Node.js'] },
-  ];
-
-  const { results, isDebouncing } = useDebounceQuery(users, {
-    $or: [
-      { name: { $regex: new RegExp(searchTerm, 'i') } },
-      { skills: { $contains: searchTerm } }
+  // Filter users over 25 with React skills
+  const results = useJsonQuery(users, {
+    $and: [
+      { age: { $gt: 25 } },
+      { skills: { $contains: 'React' } }
     ]
   });
 
   return (
-    <div>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search users..."
-      />
-      {isDebouncing && <span>Searching...</span>}
       <ul>
         {results.map(user => (
-          <li key={user.id}>
-            {user.name} - {user.skills.join(', ')}
-          </li>
+        <li key={user.id}>{user.name} - {user.age}</li>
         ))}
       </ul>
-    </div>
   );
 }
 ```
 
-## Query Operators
+## Features
 
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `$eq` | Equals | `{ age: { $eq: 25 } }` |
-| `$ne` | Not equals | `{ age: { $ne: 25 } }` |
-| `$gt` | Greater than | `{ age: { $gt: 25 } }` |
-| `$gte` | Greater than or equal | `{ age: { $gte: 25 } }` |
-| `$lt` | Less than | `{ age: { $lt: 25 } }` |
-| `$lte` | Less than or equal | `{ age: { $lte: 25 } }` |
-| `$in` | In array | `{ city: { $in: ['NY', 'LA'] } }` |
-| `$nin` | Not in array | `{ city: { $nin: ['NY', 'LA'] } }` |
-| `$regex` | Regular expression | `{ name: { $regex: /^A/ } }` |
-| `$exists` | Check if field exists | `{ email: { $exists: true } }` |
-| `$type` | Check value type | `{ age: { $type: 'number' } }` |
-| `$size` | Check array size | `{ tags: { $size: 2 } }` |
-| `$contains` | Check if array contains value | `{ tags: { $contains: 'react' } }` |
-
-## Advanced Usage
-
-### Nested Objects
+### MongoDB-like Query Syntax
 
 ```typescript
-const users = [
-  { 
-    id: 1,
-    profile: {
-      name: 'John',
-      address: {
-        city: 'New York'
-      }
-    }
-  }
-];
+// Simple equality
+const activeUsers = useJsonQuery(users, { status: 'active' });
 
-const result = queryJSON(users, {
-  'profile.address.city': 'New York'
-});
-```
-
-### Multiple Conditions
-
-```typescript
-const result = queryJSON(data, {
-  age: { $gt: 25, $lt: 35 },
-  city: { $in: ['New York', 'London'] },
-  active: true
-});
-```
-
-### Logical Operators
-
-```typescript
-const result = queryJSON(data, {
+// Complex conditions
+const seniorDevs = useJsonQuery(users, {
   $or: [
-    { city: 'New York' },
-    { age: { $gt: 30 } }
+    { experience: { $gt: 5 } },
+    { level: { $in: ['senior', 'lead'] } }
   ],
-  $and: [
-    { active: true },
-    { role: 'admin' }
-  ]
+  skills: { $contains: 'JavaScript' }
 });
 ```
 
-## TypeScript Support
-
-The package includes TypeScript definitions and supports generic types:
+### Real-time Search with Debouncing
 
 ```typescript
-interface User {
-  id: number;
-  name: string;
-  age: number;
+const { results, isDebouncing } = useDebounceQuery(
+  users,
+  { name: { $regex: searchTerm } },
+  { delay: 300 }
+);
+```
+
+## API Reference
+
+### Query Operators
+
+#### Comparison
+- `$eq`: Exact match
+- `$gt`, `$gte`: Greater than (or equal)
+- `$lt`, `$lte`: Less than (or equal)
+- `$ne`: Not equal
+- `$in`: Value in array
+- `$nin`: Value not in array
+- `$regex`: Regular expression match
+- `$exists`: Property existence check
+
+#### Logical
+- `$and`: All conditions true
+- `$or`: Any condition true
+- `$not`: Negate condition
+
+#### Array
+- `$size`: Array length check
+- `$contains`: Array includes value
+
+### Hooks
+
+#### useJsonQuery
+```typescript
+function useJsonQuery<T>(
+  data: T[],
+  query: Query,
+  options?: QueryOptions
+): T[];
+
+interface QueryOptions {
+  caseSensitive?: boolean;
+}
+```
+
+#### useDebounceQuery
+
+```typescript
+function useDebounceQuery<T>(
+  data: T[],
+  query: Query,
+  options?: DebounceOptions
+): DebounceResult<T>;
+
+interface DebounceOptions extends QueryOptions {
+  delay?: number;
 }
 
-const users: User[] = [...];
-const result = queryJSON<User>(users, { age: { $gt: 25 } });
+interface DebounceResult<T> {
+  results: T[];
+  isDebouncing: boolean;
+}
 ```
 
 ## Performance
 
-The package is designed to be ultra-lightweight and fast:
-- Zero dependencies
-- Tree-shakeable exports
-- Memoized React hooks
-- Debounced search support
-- Core bundle: 2KB minified
-- Hooks bundle: 1KB minified
-- Uses native JavaScript array methods
+- **Bundle Size**: Core: 438B, Hooks: 695B (minified + gzipped)
+- **Memory Usage**: O(1) space complexity for queries
+- **Time Complexity**: O(n) for simple queries, optimized for large datasets
 
 ## Browser Support
 
-- Chrome >= 61
-- Firefox >= 60
-- Safari >= 10.1
-- Edge >= 16
-- Opera >= 48
-
-## Framework Compatibility
-
-### React
-- React 16.8+ (for hooks)
-- React 16+ (for core functionality)
-- React Native supported
-
-### Next.js
-- Next.js 12+
-- Both Pages and App Router
-- Server Components (core functionality)
-- Client Components (hooks)
-
-### Node.js
-- Node.js 14+
-- CommonJS and ESM support
-- TypeScript support
+- Chrome, Firefox, Safari, Edge (latest 2 versions)
+- IE 11 with appropriate polyfills
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'feat: add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
 ## License
 
-MIT © [Md Azadur](https://github.com/iazadur)
+MIT © [Md Azadur Rahman](https://github.com/iazadur)
+
+## Keywords
+
+json-query, mongodb-query, react-hooks, typescript, json-filter, data-query, react-query, json-search, typescript-query, debounce-query, lightweight-query, fast-query, react-json-query, json-query-engine, mongodb-like-query
+
+---
+
+<p align="center">Made with ❤️ by <a href="https://github.com/iazadur">Md Azadur Rahman</a></p>

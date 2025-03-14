@@ -1,35 +1,54 @@
-import { useState, useEffect, useMemo } from 'react';
-import queryJSON from '../index';
-import type { QueryCondition } from '../types';
+import { useEffect, useMemo, useState } from "react";
+import { Query, QueryOptions, UseDebounceQueryResult } from "../types";
+import queryJSON from "../index";
 
 export function useDebounceQuery<T>(
   data: T[],
-  query: QueryCondition,
-  debounceMs: number = 300
-) {
-  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  query: Query,
+  options: QueryOptions & { delay?: number } = {}
+): UseDebounceQueryResult<T> {
+  const [debouncedQuery, setDebouncedQuery] = useState<Query>(query);
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const delay = options.delay ?? 300;
 
   useEffect(() => {
-    const handler = setTimeout(() => {
+    if (!Array.isArray(data) || !query || typeof query !== "object") {
+      setIsDebouncing(false);
       setDebouncedQuery(query);
-    }, debounceMs);
+      return;
+    }
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [query, debounceMs]);
+    setIsDebouncing(true);
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+      setIsDebouncing(false);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [data, query, delay]);
 
   const results = useMemo(() => {
     try {
-      return queryJSON(data, debouncedQuery);
+      if (
+        !Array.isArray(data) ||
+        !debouncedQuery ||
+        typeof debouncedQuery !== "object"
+      ) {
+        return [];
+      }
+      return queryJSON(data, debouncedQuery, {
+        caseSensitive: options.caseSensitive,
+      });
     } catch (error) {
-      console.error('Error in useDebounceQuery:', error);
+      console.error("Error in useDebounceQuery:", error);
       return [];
     }
-  }, [data, debouncedQuery]);
+  }, [data, debouncedQuery, options.caseSensitive]);
 
-  return {
-    results,
-    isDebouncing: debouncedQuery !== query,
-  };
-} 
+  // Return initial results without debouncing on first render
+  if (debouncedQuery === query) {
+    return { results, isDebouncing: false };
+  }
+
+  return { results, isDebouncing };
+}

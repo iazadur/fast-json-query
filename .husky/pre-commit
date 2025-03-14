@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Update CHANGELOG.md
+if git diff --cached --name-only | grep -q "^src/"; then
+  VERSION=$(node -p "require('./package.json').version")
+  DATE=$(date +%Y-%m-%d)
+
+  # Check if version entry exists
+  if ! grep -q "## \[$VERSION\]" CHANGELOG.md; then
+    # Create new version entry
+    sed -i "1i\\\n## [$VERSION] - $DATE\n" CHANGELOG.md
+  fi
+fi

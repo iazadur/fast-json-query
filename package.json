@@ -1,6 +1,6 @@
 {
   "name": "fast-json-query",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A lightweight and efficient JSON querying utility for filtering and searching data",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -19,74 +19,75 @@
     }
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "build": "rollup -c",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "format": "prettier --write .",
-    "prepublishOnly": "npm run build",
+    "prepare": "husky install",
+    "prepublishOnly": "npm run test && npm run build",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
-    "json",
-    "query",
-    "filter",
-    "search",
-    "mongodb-like",
-    "lightweight",
-    "fast",
-    "react",
-    "nextjs",
-    "typescript"
+    "json-query",
+    "mongodb-query",
+    "react-hooks",
+    "typescript",
+    "json-filter",
+    "data-query",
+    "react-query",
+    "json-search",
+    "typescript-query",
+    "debounce-query"
   ],
   "author": "Md Azadur",
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@size-limit/preset-small-lib": "^11.2.0",
-    "@testing-library/react": "^14.2.1",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.24",
-    "@types/react": "^18.2.61",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/react": "^18.3.18",
     "eslint": "^8.57.0",
+    "husky": "^8.0.0",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.2.5",
+    "react": "^18.2.0",
     "rollup": "^4.12.0",
     "rollup-plugin-filesize": "^10.0.0",
     "size-limit": "^11.2.0",
-    "ts-jest": "^29.1.2",
-    "tslib": "^2.8.1",
+    "ts-jest": "^29.2.6",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "next": ">=12.0.0",
     "react": ">=16.8.0"
   },
   "peerDependenciesMeta": {
     "react": {
-      "optional": true
-    },
-    "next": {
       "optional": true
     }
   },
   "size-limit": [
     {
       "path": "dist/index.js",
-      "limit": "2 KB"
+      "limit": "500B"
     },
     {
       "path": "dist/hooks/index.js",
-      "limit": "1 KB"
+      "limit": "700B"
     }
   ],
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=14.0.0"
