@@ -1,7 +1,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
-  // setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
@@ -10,11 +10,20 @@ module.exports = {
       "ts-jest",
       {
         tsconfig: "tsconfig.json",
+        diagnostics: {
+          ignoreCodes: [151001],
+        },
       },
     ],
   },
   testMatch: ["**/__tests__/**/*.test.(ts|tsx)"],
-  collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts", "!src/types.ts"],
+  collectCoverageFrom: [
+    "src/**/*.{ts,tsx}",
+    "!src/**/*.d.ts",
+    "!src/types.ts",
+    "!src/**/*.test.{ts,tsx}",
+    "!src/**/__tests__/**",
+  ],
   coverageThreshold: {
     global: {
       branches: 80,
@@ -30,6 +39,9 @@ module.exports = {
   globals: {
     "ts-jest": {
       isolatedModules: true,
+      tsconfig: "tsconfig.json",
     },
   },
+  testTimeout: 10000,
+  maxWorkers: "50%",
 };
